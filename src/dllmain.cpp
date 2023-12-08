@@ -7,7 +7,7 @@
 #include "amethyst/HookManager.h"
 #include "MinHook.h"
 
-#include "minecraft/common/world/item/Item.h"
+#include "minecraft/src/common/world/item/Item.h"
 
 HookManager hookManager;
 
@@ -18,7 +18,7 @@ static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemS
     uint64_t max = itemStack.mItem->getMaxDamage();
 
     if (max != 0) {
-        uint64_t current = max - itemStack.mItem->getDamageValue(itemStack.mTest);
+        uint64_t current = max - itemStack.mItem->getDamageValue(itemStack.mUserData);
         text.append(fmt::format("\nDurability: {} / {}", current, max));
     }
 }
