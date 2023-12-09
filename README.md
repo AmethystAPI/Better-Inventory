@@ -1,6 +1,6 @@
 # Item-Information
 
-A proof of concept, client-side mod for Minecraft Bedrock Edition 1.20.30.02, which replicates the level of detail on item hover from Minecraft Java Edition
+A proof of concept, client-side mod for Minecraft Bedrock Edition 1.20.30.02 made using [AmethystAPI](https://github.com/FrederoxDev/Amethyst). The mod shows (if applicable) item durability, and namespace:identifier information about the item.
 
 | Before                                                                                                         | After                                                                                                          |
 |----------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
