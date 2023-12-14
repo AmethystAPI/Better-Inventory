@@ -8,7 +8,6 @@
 #include "MinHook.h"
 
 #include "minecraft/src/common/world/item/Item.h"
-#include "minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.h"
 
 HookManager hookManager;
 
