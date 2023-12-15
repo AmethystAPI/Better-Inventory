@@ -21,7 +21,7 @@ static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemS
 
     if (max != 0) {
         uint64_t current = max - item->getDamageValue(itemStack.mUserData);
-        text.append(fmt::format("\nDurability: {} / {}", current, max));
+        text.append(fmt::format("\n{}7Durability: {} / {}{}r", "\xc2\xa7", current, max, "\xc2\xa7"));
     }
 
     std::string rawNameId;
