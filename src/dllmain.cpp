@@ -35,9 +35,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
-ScreenView::_setupAndRender _ScreenView_setupAndRender;
-
-static void* ScreenView_setupAndRender(ScreenView* self, UIRenderContext* ctx) {
+extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, UIRenderContext* ctx) {
     RectangleArea rect = { 0.0f, 200.0f, 0.0f, 200.0f };
     std::string text = "Hello, World!";
     mce::Color col(1.0f, 1.0f, 1.0f, 1.0f);
@@ -50,7 +48,6 @@ static void* ScreenView_setupAndRender(ScreenView* self, UIRenderContext* ctx) {
     memset(&caretData, 1, sizeof(CaretMeasureData));
 
     ctx->drawDebugText(&rect, &text, &col, 1.0f, ui::TextAlignment::Left, &textData, &caretData);
-    return _ScreenView_setupAndRender(self, ctx);
 }
 
 extern "C" __declspec(dllexport) void Initialize() {
@@ -59,11 +56,6 @@ extern "C" __declspec(dllexport) void Initialize() {
     hookManager.CreateHook(
         SigScan("40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F1 4C 89 44 24 ? 4C 8B F2 48 8B D9"),
         &Item_appendFormattedHovertext, reinterpret_cast<void**>(&_Item_appendFormattedHovertext)
-    );
-
-    hookManager.CreateHook(
-        SigScan("48 8B C4 48 89 58 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B FA 48 89 54 24 ? 4C 8B E9 48 89 4C 24"),
-        &ScreenView_setupAndRender, reinterpret_cast<void**>(&_ScreenView_setupAndRender)
     );
 }
 
