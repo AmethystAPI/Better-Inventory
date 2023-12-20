@@ -35,10 +35,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
-extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, UIRenderContext* ctx) {
-    RectangleArea rect = { 0.0f, 200.0f, 0.0f, 200.0f };
+extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
+    Vec2 screenSize = ctx->mClient->guiData->clientUIScreenSize;
+    int testBorder = 10;
+
+    RectangleArea rect = { testBorder, screenSize.x - testBorder, testBorder, screenSize.y - testBorder };
+    mce::Color bgCol(0.9f, 0.9f, 0.9f, 1.0f);
+    mce::Color fgCol(0.0f, 0.0f, 0.0f, 1.0f);
     std::string text = "Hello, World!";
-    mce::Color col(1.0f, 1.0f, 1.0f, 1.0f);
 
     TextMeasureData textData;
     memset(&textData, 0, sizeof(TextMeasureData));
@@ -47,7 +51,9 @@ extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, UIRende
     CaretMeasureData caretData;
     memset(&caretData, 1, sizeof(CaretMeasureData));
 
-    ctx->drawDebugText(&rect, &text, &col, 1.0f, ui::TextAlignment::Left, &textData, &caretData);
+    ctx->drawRectangle(&rect, &bgCol, 1.0f, 1);
+    ctx->drawDebugText(&rect, &text, &fgCol, 1.0f, ui::Left, &textData, &caretData);
+    ctx->flushText(0.0f);
 }
 
 extern "C" __declspec(dllexport) void Initialize() {
