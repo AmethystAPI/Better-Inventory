@@ -10,6 +10,8 @@
 #include "minecraft/src/common/world/item/Item.h"
 #include "minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.h"
 #include "minecraft/src-client/common/client/gui/ScreenView.h"
+#include "minecraft/src-client/common/client/renderer/TexturePtr.h"
+#include "minecraft/src-deps/core/string/StringHash.h"
 
 HookManager hookManager;
 
@@ -35,27 +37,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
-extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
-    Vec2 screenSize = ctx->mClient->guiData->clientUIScreenSize;
-    int testBorder = 10;
-
-    RectangleArea rect = { testBorder, screenSize.x - testBorder, testBorder, screenSize.y - testBorder };
-    mce::Color bgCol(0.9f, 0.9f, 0.9f, 1.0f);
-    mce::Color fgCol(0.0f, 0.0f, 0.0f, 1.0f);
-    std::string text = "Hello, World!";
-
-    TextMeasureData textData;
-    memset(&textData, 0, sizeof(TextMeasureData));
-    textData.fontSize = 1.0f;
-
-    CaretMeasureData caretData;
-    memset(&caretData, 1, sizeof(CaretMeasureData));
-
-    ctx->drawRectangle(&rect, &bgCol, 1.0f, 1);
-    ctx->drawDebugText(&rect, &text, &fgCol, 1.0f, ui::Left, &textData, &caretData);
-    ctx->flushText(0.0f);
-}
-
 extern "C" __declspec(dllexport) void Initialize() {
     MH_Initialize();
 
@@ -63,6 +44,29 @@ extern "C" __declspec(dllexport) void Initialize() {
         SigScan("40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F1 4C 89 44 24 ? 4C 8B F2 48 8B D9"),
         &Item_appendFormattedHovertext, reinterpret_cast<void**>(&_Item_appendFormattedHovertext)
     );
+}
+
+static bool hasLoadedTexture = false;
+static HashedString flushString(0xA99285D21E94FC80, "ui_flush");
+static auto texture = std::make_unique<mce::TexturePtr>();
+static ResourceLocation resource("textures/items/apple");
+
+extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
+    if (!hasLoadedTexture) {
+        ctx->getTexture(texture.get(), &resource, true);
+        hasLoadedTexture = true;
+    }
+
+    mce::Color color(1.0f, 1.0f, 1.0f, 1.0f);
+
+    if (texture != nullptr) {
+        glm::tvec2<float> vec2zero(0.0f, 0.0f);
+        glm::tvec2<float> vec2one(1.0f, 1.0f);
+        glm::tvec2<float> size(100.0f, 100.0f);
+
+        ctx->drawImage(*texture, &vec2zero, &size, &vec2zero, &vec2one, 0);
+        ctx->flushImages(color, 1.0f, flushString);
+    }
 }
 
 extern "C" __declspec(dllexport) void Shutdown() {
