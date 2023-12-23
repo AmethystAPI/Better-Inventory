@@ -13,6 +13,7 @@
 #include "minecraft/src-client/common/client/gui/ScreenView.h"
 #include "minecraft/src-client/common/client/renderer/TexturePtr.h"
 #include "minecraft/src-deps/core/string/StringHash.h"
+#include "minecraft/src/common/world/item/ItemStackBase.h"
 
 HookManager hookManager;
 
