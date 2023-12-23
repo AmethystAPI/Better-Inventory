@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 #include "amethyst/Log.h"
 #include "amethyst/HookManager.h"
@@ -46,27 +47,37 @@ extern "C" __declspec(dllexport) void Initialize() {
     );
 }
 
-static bool hasLoadedTexture = false;
-static HashedString flushString(0xA99285D21E94FC80, "ui_flush");
-static auto texture = std::make_unique<mce::TexturePtr>();
-static ResourceLocation resource("textures/items/apple");
+static ClientInstance* g_client = nullptr;
+
+extern "C" __declspec(dllexport) void OnStartJoinGame(ClientInstance* ci) {
+    g_client = ci;
+}
 
 extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
-    if (!hasLoadedTexture) {
-        ctx->getTexture(texture.get(), &resource, true);
-        hasLoadedTexture = true;
-    }
+    if (g_client == nullptr) return;
+    
+    LocalPlayer* player = g_client->getLocalPlayer();
+    if (player == nullptr) return;
 
-    mce::Color color(1.0f, 1.0f, 1.0f, 1.0f);
+    std::string text = "Minecraft 1.20.30.02 (AmethystAPI)";
 
-    if (texture != nullptr) {
-        glm::tvec2<float> vec2zero(0.0f, 0.0f);
-        glm::tvec2<float> vec2one(1.0f, 1.0f);
-        glm::tvec2<float> size(100.0f, 100.0f);
+    Vec3* pos = player->getPosition();
+    Vec3* rot = player->getHeadLookVector(1.0f);
+    text.append(fmt::format("\n\nXYZ: {:.3f} / {:.3f} / {:.3f}", pos->x, pos->y, pos->z));
+    text.append(fmt::format("\nRot: {} {} {}", rot->x, rot->y, rot->z));
 
-        ctx->drawImage(*texture, &vec2zero, &size, &vec2zero, &vec2one, 0);
-        ctx->flushImages(color, 1.0f, flushString);
-    }
+    // Render text on screen
+    RectangleArea rect = { 0.0f, 0.0f, 0.0f, 0.0f };
+    mce::Color white(1.0f, 1.0f, 1.0f, 1.0f);
+
+    TextMeasureData textData;
+    memset(&textData, 0, sizeof(TextMeasureData));
+    textData.fontSize = 1.0f;
+
+    CaretMeasureData caretData;
+    memset(&caretData, 1, sizeof(CaretMeasureData));
+
+    ctx->drawDebugText(&rect, &text, &white, 1.0f, ui::Left, &textData, &caretData);
 }
 
 extern "C" __declspec(dllexport) void Shutdown() {
