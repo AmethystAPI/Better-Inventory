@@ -13,6 +13,7 @@
 #include "minecraft/src-client/common/client/gui/ScreenView.h"
 #include "minecraft/src-client/common/client/renderer/TexturePtr.h"
 #include "minecraft/src-deps/core/string/StringHash.h"
+#include "minecraft/src/common/world/item/ItemStackBase.h"
 
 HookManager hookManager;
 
@@ -25,8 +26,8 @@ static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemS
     uint64_t max = item->getMaxDamage();
 
     if (max != 0) {
-        uint64_t current = max - item->getDamageValue(itemStack.mUserData);
-        text.append(fmt::format("\n{}7Durability: {} / {}{}r", "\xc2\xa7", current, max, "\xc2\xa7"));
+        uint64_t remaining = max - item->getDamageValue(itemStack.mUserData);
+        text.append(fmt::format("\n{}7Durability: {} / {}{}r", "\xc2\xa7", remaining, max, "\xc2\xa7"));
     }
 
     std::string rawNameId;
@@ -53,32 +54,32 @@ extern "C" __declspec(dllexport) void OnStartJoinGame(ClientInstance* ci) {
     g_client = ci;
 }
 
-extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
-    if (g_client == nullptr) return;
-    
-    LocalPlayer* player = g_client->getLocalPlayer();
-    if (player == nullptr) return;
-
-    std::string text = "Minecraft 1.20.30.02 (AmethystAPI)";
-
-    Vec3* pos = player->getPosition();
-    Vec3* rot = player->getHeadLookVector(1.0f);
-    text.append(fmt::format("\n\nXYZ: {:.3f} / {:.3f} / {:.3f}", pos->x, pos->y, pos->z));
-    text.append(fmt::format("\nRot: {} {} {}", rot->x, rot->y, rot->z));
-
-    // Render text on screen
-    RectangleArea rect = { 0.0f, 0.0f, 0.0f, 0.0f };
-    mce::Color white(1.0f, 1.0f, 1.0f, 1.0f);
-
-    TextMeasureData textData;
-    memset(&textData, 0, sizeof(TextMeasureData));
-    textData.fontSize = 1.0f;
-
-    CaretMeasureData caretData;
-    memset(&caretData, 1, sizeof(CaretMeasureData));
-
-    ctx->drawDebugText(&rect, &text, &white, 1.0f, ui::Left, &textData, &caretData);
-}
+//extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
+//    if (g_client == nullptr) return;
+//    
+//    LocalPlayer* player = g_client->getLocalPlayer();
+//    if (player == nullptr) return;
+//
+//    std::string text = "Minecraft 1.20.51 (AmethystAPI)";
+//
+//    // Vec3* pos = player->getPosition();
+//    // Vec3* rot = player->getHeadLookVector(1.0f);
+//    // text.append(fmt::format("\n\nXYZ: {:.3f} / {:.3f} / {:.3f}", pos->x, pos->y, pos->z));
+//    // text.append(fmt::format("\nRot: {} {} {}", rot->x, rot->y, rot->z));
+//
+//    // Render text on screen
+//    RectangleArea rect = { 0.0f, 0.0f, 0.0f, 0.0f };
+//    mce::Color white(1.0f, 1.0f, 1.0f, 1.0f);
+//
+//    TextMeasureData textData;
+//    memset(&textData, 0, sizeof(TextMeasureData));
+//    textData.fontSize = 1.0f;
+//
+//    CaretMeasureData caretData;
+//    memset(&caretData, 1, sizeof(CaretMeasureData));
+//
+//    ctx->drawDebugText(&rect, &text, &white, 1.0f, ui::Left, &textData, &caretData);
+//}
 
 extern "C" __declspec(dllexport) void Shutdown() {
     hookManager.Shutdown();
