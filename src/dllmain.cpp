@@ -53,32 +53,32 @@ extern "C" __declspec(dllexport) void OnStartJoinGame(ClientInstance* ci) {
     g_client = ci;
 }
 
-extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
-    if (g_client == nullptr) return;
-    
-    LocalPlayer* player = g_client->getLocalPlayer();
-    if (player == nullptr) return;
-
-    std::string text = "Minecraft 1.20.30.02 (AmethystAPI)";
-
-    Vec3* pos = player->getPosition();
-    Vec3* rot = player->getHeadLookVector(1.0f);
-    text.append(fmt::format("\n\nXYZ: {:.3f} / {:.3f} / {:.3f}", pos->x, pos->y, pos->z));
-    text.append(fmt::format("\nRot: {} {} {}", rot->x, rot->y, rot->z));
-
-    // Render text on screen
-    RectangleArea rect = { 0.0f, 0.0f, 0.0f, 0.0f };
-    mce::Color white(1.0f, 1.0f, 1.0f, 1.0f);
-
-    TextMeasureData textData;
-    memset(&textData, 0, sizeof(TextMeasureData));
-    textData.fontSize = 1.0f;
-
-    CaretMeasureData caretData;
-    memset(&caretData, 1, sizeof(CaretMeasureData));
-
-    ctx->drawDebugText(&rect, &text, &white, 1.0f, ui::Left, &textData, &caretData);
-}
+//extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
+//    if (g_client == nullptr) return;
+//    
+//    LocalPlayer* player = g_client->getLocalPlayer();
+//    if (player == nullptr) return;
+//
+//    std::string text = "Minecraft 1.20.30.02 (AmethystAPI)";
+//
+//    Vec3* pos = player->getPosition();
+//    Vec3* rot = player->getHeadLookVector(1.0f);
+//    text.append(fmt::format("\n\nXYZ: {:.3f} / {:.3f} / {:.3f}", pos->x, pos->y, pos->z));
+//    text.append(fmt::format("\nRot: {} {} {}", rot->x, rot->y, rot->z));
+//
+//    // Render text on screen
+//    RectangleArea rect = { 0.0f, 0.0f, 0.0f, 0.0f };
+//    mce::Color white(1.0f, 1.0f, 1.0f, 1.0f);
+//
+//    TextMeasureData textData;
+//    memset(&textData, 0, sizeof(TextMeasureData));
+//    textData.fontSize = 1.0f;
+//
+//    CaretMeasureData caretData;
+//    memset(&caretData, 1, sizeof(CaretMeasureData));
+//
+//    ctx->drawDebugText(&rect, &text, &white, 1.0f, ui::Left, &textData, &caretData);
+//}
 
 extern "C" __declspec(dllexport) void Shutdown() {
     hookManager.Shutdown();
