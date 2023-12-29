@@ -4,20 +4,17 @@
 #include <fstream>
 #include <chrono>
 
-#include "amethyst/Log.h"
-#include "amethyst/HookManager.h"
-#include "MinHook.h"
+#include <amethyst/Log.h>
+#include <amethyst/HookManager.h>
 
-#include "minecraft/src/common/world/item/Item.h"
-#include "minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.h"
-#include "minecraft/src-client/common/client/gui/ScreenView.h"
-#include "minecraft/src-client/common/client/renderer/TexturePtr.h"
-#include "minecraft/src-deps/core/string/StringHash.h"
-#include "minecraft/src/common/world/item/ItemStackBase.h"
+#include <minecraft/src/common/world/item/Item.h>
+#include <minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.h>
+#include <minecraft/src-client/common/client/gui/ScreenView.h>
+#include <minecraft/src-client/common/client/renderer/TexturePtr.h>
+#include <minecraft/src-deps/core/string/StringHash.h>
+#include <minecraft/src/common/world/item/ItemStackBase.h>
 
 #include "F3Screen.h"
-
-// reminder to self logging broke lmfao gl
 
 HookManager hookManager;
 
@@ -52,16 +49,9 @@ extern "C" __declspec(dllexport) void Initialize() {
     );
 }
 
-static ClientInstance* g_client = nullptr;
-
-
-extern "C" __declspec(dllexport) void OnStartJoinGame(ClientInstance* ci) {
-    g_client = ci;
-}
-
 static F3Screen f3Screen;
 
-extern "C" __declspec(dllexport) void OnRenderUI(ScreenView* screenView, MinecraftUIRenderContext* ctx) {
+extern "C" __declspec(dllexport) void OnRenderUI(ScreenView * screenView, MinecraftUIRenderContext * ctx) {
     f3Screen.Render(ctx);
 }
 

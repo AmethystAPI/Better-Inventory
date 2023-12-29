@@ -1,17 +1,14 @@
 #include "F3Screen.h"
 
 void F3Screen::Render(MinecraftUIRenderContext* ctx) {
-    if (ctx->mClient == nullptr) return;
-
     LocalPlayer* player = ctx->mClient->getLocalPlayer();
     if (player == nullptr) return;
 
     std::string text = "Minecraft 1.20.51.1 (AmethystAPI)";
 
-    const auto* headRotation = player->tryGetComponent<ActorHeadRotationComponent>();
-    if (headRotation != nullptr) {
-        std::cout << headRotation->firstVec.x << std::endl;
-    }
+    const ActorRotationComponent* component = player->tryGetComponent<ActorRotationComponent>();
+    Vec2 headRot = component->headRot;
+    text += fmt::format("\n\n({} / {})", headRot.y, headRot.x);
 
     // Render text on screen
     RectangleArea rect = { 0.0f, 0.0f, 0.0f, 0.0f };
