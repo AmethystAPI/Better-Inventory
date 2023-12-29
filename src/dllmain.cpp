@@ -40,7 +40,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
-extern "C" __declspec(dllexport) void Initialize() {
+extern "C" __declspec(dllexport) void Initialize(const char* gameVersion) {
     MH_Initialize();
 
     hookManager.CreateHook(

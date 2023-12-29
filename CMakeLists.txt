@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(ItemInformation)
-set(MOD_VERSION "1.2.0")
+set(MOD_VERSION "1.2.1")
+
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -10,7 +12,8 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 
 # Project Configuration
 set(AmethystFolder "$ENV{appdata}/Amethyst")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${AmethystFolder}/mods/${PROJECT_NAME}@${MOD_VERSION}")
+set(UWPAmethystFolder "$ENV{LOCALAPPDATA}/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/AC/Amethyst")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${UWPAmethystFolder}/mods/${PROJECT_NAME}@${MOD_VERSION}")
 
 find_library(AMETHYST_API AmethystAPI PATHS "${AmethystFolder}/lib")
 include_directories(${AmethystFolder}/include)
