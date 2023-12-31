@@ -1,14 +1,28 @@
 #include "F3Screen.h"
 
+extern int offset;
+
 void F3Screen::Render(MinecraftUIRenderContext* ctx) {
     LocalPlayer* player = ctx->mClient->getLocalPlayer();
     if (player == nullptr) return;
 
-    std::string text = "Minecraft 1.20.51.1 (AmethystAPI)";
+    std::string text = "Minecraft 1.20.51.1 (AmethystAPI)\n";
+
+    const StateVectorComponent* stateComponent = player->tryGetComponent<StateVectorComponent>();
+    const Vec3* pos = &stateComponent->pos;
+    text += fmt::format("\nXYZ: {:.3f}, {:.3f}, {:.3f}", pos->x, pos->y, pos->z);
 
     const ActorRotationComponent* component = player->tryGetComponent<ActorRotationComponent>();
     Vec2 headRot = component->headRot;
-    text += fmt::format("\n\n({} / {})", headRot.y, headRot.x);
+    std::string direction;
+
+    float cardinalRot = headRot.y + 180.0f;
+    if (cardinalRot >= 315.0f || cardinalRot < 45.0f) direction = "north (Towards negative Z)";
+    else if (cardinalRot >= 45.0f && cardinalRot < 135.0f) direction = "east (Towards positive X)";
+    else if (cardinalRot >= 135.0f && cardinalRot < 225.0f) direction = "south (Towards positive Z)";
+    else direction = "west (Towards negative X)";
+
+    text += fmt::format("\nFacing: {} ({:.1f} / {:.1f})", direction, headRot.y, headRot.x);
 
     // Render text on screen
     RectangleArea rect = { 0.0f, 0.0f, 0.0f, 0.0f };
