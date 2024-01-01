@@ -9,11 +9,11 @@ void F3Screen::Render(MinecraftUIRenderContext* ctx) {
     std::string text = "Minecraft 1.20.51.1 (AmethystAPI)\n";
 
     const StateVectorComponent* stateComponent = player->tryGetComponent<StateVectorComponent>();
-    const Vec3* pos = &stateComponent->pos;
+    const Vec3* pos = &stateComponent->mPos;
     text += fmt::format("\nXYZ: {:.3f}, {:.3f}, {:.3f}", pos->x, pos->y, pos->z);
 
     const ActorRotationComponent* component = player->tryGetComponent<ActorRotationComponent>();
-    Vec2 headRot = component->headRot;
+    Vec2 headRot = component->mHeadRot;
     std::string direction;
 
     float cardinalRot = headRot.y + 180.0f;
