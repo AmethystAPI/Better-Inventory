@@ -42,10 +42,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
+bool shouldRenderF3 = false;
 static F3Screen f3Screen;
 
 extern "C" __declspec(dllexport) void OnRenderUI(ScreenView * screenView, MinecraftUIRenderContext * ctx) {
-    f3Screen.Render(ctx);
+    if (shouldRenderF3) f3Screen.Render(ctx);
 }
 
 extern "C" __declspec(dllexport) void Shutdown() {
@@ -55,20 +56,41 @@ extern "C" __declspec(dllexport) void Shutdown() {
 VanillaClientInputMappingFactory::__createBaseNormalGamePlayKeyboardAndMouseMapping __createBaseNormalGamePlayKeyboardAndMouseMapping;
 
 std::string testButtonId = "button.test";
+int32_t keyNum = 0x72;
+bool addedAlready = false;
 
 static void* _createBaseNormalGamePlayKeyboardAndMouseMapping(VanillaClientInputMappingFactory* self, KeyboardInputMapping* keyboardMap, MouseInputMapping* mouseMap) {
     void* ret = __createBaseNormalGamePlayKeyboardAndMouseMapping(self, keyboardMap, mouseMap);
-    self->_bindActionToKeyboardAndMouseInput(keyboardMap, mouseMap, &testButtonId, (Remapping::ActionEnum)1, FocusImpact::Neutral);
+    self->_bindActionToKeyboardAndMouseInput(keyboardMap, mouseMap, &testButtonId, (Remapping::ActionEnum)100, FocusImpact::Neutral);
+
+    Log::Info("\n_createBaseNormalGamePlayKeyboardAndMouseMapping");
+
+    Keymapping newKeymapping = { "key.test", { keyNum }, true };
+
+    if (!addedAlready) {
+        self->mLayout->mDefaultMappings.push_back(newKeymapping); // key...
+        self->mLayout->mKeymappings.push_back(newKeymapping);
+        addedAlready = true;
+    }
+
+    /*for (auto it = self->mActiveInputMappings.begin(); it != self->mActiveInputMappings.end(); ++it) {
+        const std::string mappingName = it->first;
+        KeyboardKeyBinding key = { testButtonId, keyNum, FocusImpact::Neutral };
+
+        InputMapping inputMapping = it->second;
+        inputMapping.keyboardMapping.keyBindings.push_back(key);
+    }*/
 
     return ret;
 }
 
 extern "C" __declspec(dllexport) void OnStartJoinGame(ClientInstance * clientInstance) {
-    InputHandler* handler = clientInstance->inputHandler->mInputHandler;
-    handler->registerButtonDownHandler("button.test", [](FocusImpact impact, IClientInstance& instance) {
-        Log::Info("button.test pressed!!");
-    }, false);
+    /*InputHandler* handler = clientInstance->inputHandler->mInputHandler;
 
+    handler->registerButtonDownHandler(testButtonId, [](FocusImpact impact, IClientInstance& instance) {
+        Log::Info("{} pressed!!", testButtonId);
+        shouldRenderF3 = !shouldRenderF3;
+    }, false);*/
 }
 
 extern "C" __declspec(dllexport) void Initialize(const char* gameVersion) {
