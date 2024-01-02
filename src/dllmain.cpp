@@ -61,17 +61,17 @@ bool addedAlready = false;
 
 static void* _createBaseNormalGamePlayKeyboardAndMouseMapping(VanillaClientInputMappingFactory* self, KeyboardInputMapping* keyboardMap, MouseInputMapping* mouseMap) {
     void* ret = __createBaseNormalGamePlayKeyboardAndMouseMapping(self, keyboardMap, mouseMap);
-    self->_bindActionToKeyboardAndMouseInput(keyboardMap, mouseMap, &testButtonId, (Remapping::ActionEnum)100, FocusImpact::Neutral);
+    //self->_bindActionToKeyboardAndMouseInput(keyboardMap, mouseMap, &testButtonId, (Remapping::ActionEnum)100, FocusImpact::Neutral);
 
-    Log::Info("\n_createBaseNormalGamePlayKeyboardAndMouseMapping");
+    //Log::Info("\n_createBaseNormalGamePlayKeyboardAndMouseMapping");
 
-    Keymapping newKeymapping = { "key.test", { keyNum }, true };
+    //Keymapping newKeymapping = { "key.test", { keyNum }, true };
 
-    if (!addedAlready) {
-        self->mLayout->mDefaultMappings.push_back(newKeymapping); // key...
-        self->mLayout->mKeymappings.push_back(newKeymapping);
-        addedAlready = true;
-    }
+    //if (!addedAlready) {
+    //    self->mLayout->mDefaultMappings.push_back(newKeymapping); // key...
+    //    self->mLayout->mKeymappings.push_back(newKeymapping);
+    //    addedAlready = true;
+    //}
 
     /*for (auto it = self->mActiveInputMappings.begin(); it != self->mActiveInputMappings.end(); ++it) {
         const std::string mappingName = it->first;
@@ -101,8 +101,8 @@ extern "C" __declspec(dllexport) void Initialize(const char* gameVersion) {
         &Item_appendFormattedHovertext, reinterpret_cast<void**>(&_Item_appendFormattedHovertext)
     );
 
-    hookManager.CreateHook(
+    /*hookManager.CreateHook(
         SigScan("48 89 5C 24 ? 55 56 57 48 8B EC 48 83 EC ? 49 8B F0 48 8B DA 48 8B F9 E8"),
         &_createBaseNormalGamePlayKeyboardAndMouseMapping, reinterpret_cast<void**>(&__createBaseNormalGamePlayKeyboardAndMouseMapping)
-    );
+    );*/
 }
