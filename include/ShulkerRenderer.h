@@ -7,6 +7,8 @@
 #include <minecraft/src-client/common/client/renderer/BaseActorRenderContext.h>
 #include <minecraft/src-client/common/client/renderer/actor/ItemRenderer.h>
 #include <minecraft/src-client/common/client/gui/controls/renderers/HoverRenderer.h>
+#include <minecraft/src-client/common/client/renderer/NinesliceInfo.h>
+#include <amethyst/ui/NinesliceHelper.h>
 
 class ShulkerRenderer {
 public:

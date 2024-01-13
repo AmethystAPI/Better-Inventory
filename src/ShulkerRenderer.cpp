@@ -1,10 +1,16 @@
 #include "ShulkerRenderer.h"
 
-static HashedString flushString(0xA99285D21E94FC80, "ui_flush");
+extern ItemStack shulkerInventory[27];
 
 // Texture loading
-static auto itemSlotTexture = std::make_unique<mce::TexturePtr>();
+static HashedString flushString(0xA99285D21E94FC80, "ui_flush");
+
+static const auto itemSlotTexture = std::make_unique<mce::TexturePtr>();
+static const auto backgroundTexture = std::make_unique<mce::TexturePtr>();
+
 static ResourceLocation itemSlotLocation("textures/gui/gui");
+static ResourceLocation backgroundLocation("textures/ui/purpleBorder");
+
 bool hasLoadedTexture = false;
 
 // Slot sizing
@@ -14,29 +20,28 @@ float borderSize = (slotSize - 16.f) / 2;
 // Uv positions
 glm::tvec2<float> itemSlotUvPos(188.0f / 256.0f, 184.0f / 256.0f);
 glm::tvec2<float> itemSlotUvSize(22.0f / 256.0f, 22.0f / 256.0f);
-
-extern ItemStack shulkerInventory[27];
-
-mce::Color panelBackground(27.0f / 255.0f, 12.0f / 255.0f, 27.0f / 255.0f, 1.0f);
+Amethyst::NinesliceHelper backgroundNineslice(16, 16, 4, 4);
 
 void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer) {
-	if (ctx == nullptr || ctx->mClient->getLocalPlayer() == nullptr) return;
-
 	// Only load inventory resources once
 	if (!hasLoadedTexture) {
 		ctx->getTexture(itemSlotTexture.get(), &itemSlotLocation, true);
+        ctx->getTexture(backgroundTexture.get(), &backgroundLocation, true);
 		hasLoadedTexture = true;
 	}
 
-    float textHeight = 20.0f;
+    float textHeight = 30.0f;
     float panelWidth = slotSize * 9;
     float panelHeight = slotSize * 3 + textHeight;
 
     float panelX = hoverRenderer->mCursorPosition.x + hoverRenderer->mOffset.x;
     float panelY = hoverRenderer->mCursorPosition.y + hoverRenderer->mOffset.y;
 
-    RectangleArea background = {panelX, panelX + panelWidth, panelY, panelY + panelHeight};
-    ctx->drawRectangle(&background, &panelBackground, 1.0f, 1);
+    // Draw the background panel
+    //RectangleArea background = {panelX, panelX + panelWidth, panelY, panelY + panelHeight};
+    RectangleArea background = {panelX - 4, panelX + panelWidth + 4, panelY - 4, panelY + panelHeight + 4};
+    backgroundNineslice.Draw(background, backgroundTexture.get(), ctx);
+    ctx->flushImages(mce::Color::WHITE, 1.0f, flushString);
 
     // Draw the item slots
 	for (int x = 0; x < 9; x++) {
@@ -98,7 +103,8 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer)
 
     ctx->flushText(0.0f);
 
+    RectangleArea textArea = { panelX, panelX + panelWidth, panelY, panelY + textHeight };
     RectangleArea rect = { panelX, panelX + panelWidth, panelY, panelY + panelHeight };
-    ctx->drawDebugText(&background, &hoverRenderer->mFilteredContent, &mce::Color::WHITE, 1.0f, ui::Left, &textData, &caretData);
+    ctx->drawDebugText(&textArea, &hoverRenderer->mFilteredContent, &mce::Color::WHITE, 1.0f, ui::Left, &textData, &caretData);
     ctx->flushText(0.0f);
 }
