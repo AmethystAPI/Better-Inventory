@@ -24,6 +24,7 @@
 #include <minecraft/src/common/world/Container.h>
 #include <minecraft/src-deps/core/resource/ResourceHelper.h>
 #include <minecraft/src-client/common/client/renderer/TexturePtr.h>
+#include <minecraft/src-client/common/client/gui/controls/renderers/HoverRenderer.h>
 
 #include "ShulkerRenderer.h"
 
