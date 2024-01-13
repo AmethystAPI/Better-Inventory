@@ -19,7 +19,7 @@ extern ItemStack shulkerInventory[27];
 
 mce::Color panelBackground(27.0f / 255.0f, 12.0f / 255.0f, 27.0f / 255.0f, 1.0f);
 
-void ShulkerRenderer::Render(UIRenderContext* ctx, std::string& hoverText) {
+void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer) {
 	if (ctx == nullptr || ctx->mClient->getLocalPlayer() == nullptr) return;
 
 	// Only load inventory resources once
@@ -32,14 +32,17 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, std::string& hoverText) {
     float panelWidth = slotSize * 9;
     float panelHeight = slotSize * 3 + textHeight;
 
-    RectangleArea background = {0.0f, panelWidth, 0.0f, panelHeight};
+    float panelX = hoverRenderer->mCursorPosition.x + hoverRenderer->mOffset.x;
+    float panelY = hoverRenderer->mCursorPosition.y + hoverRenderer->mOffset.y;
+
+    RectangleArea background = {panelX, panelX + panelWidth, panelY, panelY + panelHeight};
     ctx->drawRectangle(&background, &panelBackground, 1.0f, 1);
 
     // Draw the item slots
 	for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 3; y++) {
             glm::tvec2<float> size(slotSize, slotSize);
-            glm::tvec2<float> position(slotSize * x, slotSize * y + textHeight);
+            glm::tvec2<float> position(panelX + slotSize * x, panelY + textHeight + slotSize * y);
 
             ctx->drawImage(*itemSlotTexture, &position, &size, &itemSlotUvPos, &itemSlotUvSize, 0);
         }
@@ -56,10 +59,10 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, std::string& hoverText) {
             const ItemStack* itemStack = &shulkerInventory[y * 9 + x];
             if (itemStack->mItem == nullptr) continue;
 
-            float xPos = (x * slotSize) + borderSize;
-            float yPos = (y * slotSize) + borderSize;
+            float xPos = (x * slotSize) + borderSize + panelX;
+            float yPos = (y * slotSize) + borderSize + textHeight + panelY;
 
-            renderCtxPtr.itemRenderer->renderGuiItemNew(&renderCtxPtr, itemStack, 0, xPos, yPos + textHeight, false, 1.f, 1.f, 1.f);
+            renderCtxPtr.itemRenderer->renderGuiItemNew(&renderCtxPtr, itemStack, 0, xPos, yPos, false, 1.f, 1.f, 1.f);
         }
     }
 
@@ -80,10 +83,10 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, std::string& hoverText) {
             if (itemStack->mItem == nullptr) continue;
             if (itemStack->count == 1) continue;
 
-            float top = (y * slotSize) + borderSize + textHeight;
+            float top = (y * slotSize) + borderSize + textHeight + panelY;
             float bottom = top + 16.f;
 
-            float left = (x * slotSize) + borderSize;
+            float left = (x * slotSize) + borderSize + panelX;
             float right = left + 16.f;
 
             std::string text = fmt::format("{}", itemStack->count);
@@ -95,7 +98,7 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, std::string& hoverText) {
 
     ctx->flushText(0.0f);
 
-    RectangleArea rect = { 0.0f, 0.0f, 0.0f, 0.0f };
-    ctx->drawDebugText(&rect, &hoverText, &mce::Color::WHITE, 1.0f, ui::Left, &textData, &caretData);
+    RectangleArea rect = { panelX, panelX + panelWidth, panelY, panelY + panelHeight };
+    ctx->drawDebugText(&background, &hoverRenderer->mFilteredContent, &mce::Color::WHITE, 1.0f, ui::Left, &textData, &caretData);
     ctx->flushText(0.0f);
 }

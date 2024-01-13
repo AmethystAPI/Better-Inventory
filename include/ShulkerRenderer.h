@@ -6,8 +6,9 @@
 #include <minecraft/src-client/common/client/renderer/TexturePtr.h>
 #include <minecraft/src-client/common/client/renderer/BaseActorRenderContext.h>
 #include <minecraft/src-client/common/client/renderer/actor/ItemRenderer.h>
+#include <minecraft/src-client/common/client/gui/controls/renderers/HoverRenderer.h>
 
 class ShulkerRenderer {
 public:
-	void Render(UIRenderContext* ctx, std::string& hoverText);
+	void Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer);
 };

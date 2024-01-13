@@ -52,8 +52,8 @@ static void Shulker_appendFormattedHovertext(ShulkerBoxBlockItem* self, const It
 static void _renderHoverBox(HoverRenderer* self, MinecraftUIRenderContext* ctx, IClientInstance* client, RectangleArea* aabb, float someFloat) {
     // This is really bad code, it is relying on the fact that I have also hooked appendFormattedHovertext for items to append the item identifier
     // I have no idea where the currently hovered item is stored in the game! I can't find any references to it, so it might be set in some weird place?
-    if (self->mText.find("shulker_box") != std::string::npos) {
-        shulkerRenderer.Render(ctx, self->mText);
+    if (self->mFilteredContent.find("shulker_box") != std::string::npos) {
+        shulkerRenderer.Render(ctx, self);
         return;
     }
 
