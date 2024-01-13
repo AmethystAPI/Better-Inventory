@@ -9,5 +9,5 @@
 
 class ShulkerRenderer {
 public:
-	void Render(UIRenderContext* ctx);
+	void Render(UIRenderContext* ctx, std::string& hoverText);
 };
