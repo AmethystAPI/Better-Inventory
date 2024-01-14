@@ -10,7 +10,9 @@
 #include <minecraft/src-client/common/client/renderer/NinesliceInfo.h>
 #include <amethyst/ui/NinesliceHelper.h>
 
+#define SHULKER_CACHE_SIZE 16
+
 class ShulkerRenderer {
 public:
-	void Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer);
+	void Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer, int index);
 };

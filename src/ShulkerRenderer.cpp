@@ -1,6 +1,6 @@
 #include "ShulkerRenderer.h"
 
-extern ItemStack shulkerInventory[27];
+extern ItemStack shulkerInventory[SHULKER_CACHE_SIZE][27];
 
 // Texture loading
 static HashedString flushString(0xA99285D21E94FC80, "ui_flush");
@@ -22,7 +22,19 @@ glm::tvec2<float> itemSlotUvPos(188.0f / 256.0f, 184.0f / 256.0f);
 glm::tvec2<float> itemSlotUvSize(22.0f / 256.0f, 22.0f / 256.0f);
 Amethyst::NinesliceHelper backgroundNineslice(16, 16, 4, 4);
 
-void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer) {
+int countNewlines(const std::string& str) {
+    int newlineCount = 0;
+
+    for (char c : str) {
+        if (c == '\n') {
+            newlineCount++;
+        }
+    }
+
+    return newlineCount;
+}
+
+void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer, int index) {
 	// Only load inventory resources once
 	if (!hasLoadedTexture) {
 		ctx->getTexture(itemSlotTexture.get(), &itemSlotLocation, true);
@@ -30,7 +42,7 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer)
 		hasLoadedTexture = true;
 	}
 
-    float textHeight = 30.0f;
+    float textHeight = (countNewlines(hoverRenderer->mFilteredContent) + 1) * 10.0f;
     float panelWidth = slotSize * 9;
     float panelHeight = slotSize * 3 + textHeight;
 
@@ -38,7 +50,6 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer)
     float panelY = hoverRenderer->mCursorPosition.y + hoverRenderer->mOffset.y;
 
     // Draw the background panel
-    //RectangleArea background = {panelX, panelX + panelWidth, panelY, panelY + panelHeight};
     RectangleArea background = {panelX - 4, panelX + panelWidth + 4, panelY - 4, panelY + panelHeight + 4};
     backgroundNineslice.Draw(background, backgroundTexture.get(), ctx);
     ctx->flushImages(mce::Color::WHITE, 1.0f, flushString);
@@ -61,7 +72,7 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer)
 
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 3; y++) {
-            const ItemStack* itemStack = &shulkerInventory[y * 9 + x];
+            const ItemStack* itemStack = &shulkerInventory[index][y * 9 + x];
             if (itemStack->mItem == nullptr) continue;
 
             float xPos = (x * slotSize) + borderSize + panelX;
@@ -84,7 +95,7 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer)
     // Draw the item counts
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 3; y++) {
-            ItemStack* itemStack = &shulkerInventory[y * 9 + x];
+            ItemStack* itemStack = &shulkerInventory[index][y * 9 + x];
             if (itemStack->mItem == nullptr) continue;
             if (itemStack->count == 1) continue;
 
