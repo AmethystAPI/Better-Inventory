@@ -8,6 +8,8 @@
 #include <amethyst/HookManager.h>
 #include <amethyst/InputManager.h>
 #include <amethyst/Memory.h>
+#include <amethyst/events/EventManager.h>
+#include <amethyst/events/Event.h>
 #include <minecraft/src/common/world/item/ItemStack.h>
 #include <minecraft/src/common/world/item/ShulkerBoxBlockItem.h>
 #include <minecraft/src/common/world/item/ItemStackBase.h>
@@ -25,6 +27,7 @@
 #include <minecraft/src-deps/core/resource/ResourceHelper.h>
 #include <minecraft/src-client/common/client/renderer/TexturePtr.h>
 #include <minecraft/src-client/common/client/gui/controls/renderers/HoverRenderer.h>
+#include <chrono>
 
 #include "ShulkerRenderer.h"
 

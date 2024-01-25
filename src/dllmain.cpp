@@ -1,6 +1,5 @@
 ﻿#include "dllmain.h"
 
-HookManager hookManager;
 ClientInstance* client;
 
 ShulkerBoxBlockItem::_appendFormattedHovertext _Shulker_appendFormattedHoverText;
@@ -89,10 +88,25 @@ static void _renderHoverBox(HoverRenderer* self, MinecraftUIRenderContext* ctx, 
     __renderHoverBox(self, ctx, client, aabb, someFloat);
 }
 
-ModFunction void Initialize(const char* gameVersion, InputManager * inputManager) {
+void OnStartJoinGame(ClientInstance* ci) {
+    
+}
+
+void OnRenderUI(ScreenView* screen, UIRenderContext* ctx) {
+    
+}
+
+ModFunction void Initialize(HookManager* hookManager, Amethyst::EventManager* eventManager, InputManager * inputManager) {
     MH_Initialize();
 
-    hookManager.CreateHook(
+    hookManager->RegisterFunction(&Item::appendFormattedHovertext, "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F1 4C 89 44 24 ? 4C 8B F2 48 8B D9");
+
+    hookManager->CreateHook(
+        &Item::appendFormattedHovertext, 
+        &Item_appendFormattedHovertext, reinterpret_cast<void**>(&_Item_appendFormattedHovertext)
+    );
+
+    /*hookManager.CreateHook(
         SigScan("40 53 55 56 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 4D 8B F9 48 8B DA"),
         &Shulker_appendFormattedHovertext, reinterpret_cast<void**>(&_Shulker_appendFormattedHoverText)
     );
@@ -105,9 +119,8 @@ ModFunction void Initialize(const char* gameVersion, InputManager * inputManager
     hookManager.CreateHook(
         SigScan("48 8B C4 48 89 58 ? 48 89 70 ? 48 89 78 ? 4C 89 70 ? 55 48 8D 68 ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 44 0F 29 40 ? 49 8B D9"),
         &_renderHoverBox, reinterpret_cast<void**>(&__renderHoverBox)
-    );
-}
+    );*/
 
-ModFunction void Shutdown() {
-    hookManager.Shutdown();
+    eventManager->onStartJoinGame.AddListener(OnStartJoinGame);
+    eventManager->onRenderUI.AddListener(OnRenderUI);
 }
