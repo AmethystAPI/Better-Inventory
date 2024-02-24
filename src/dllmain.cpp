@@ -2,17 +2,17 @@
 
 ClientInstance* client;
 
-ShulkerBoxBlockItem::_appendFormattedHovertext _Shulker_appendFormattedHoverText;
-Item::_appendFormattedHovertext _Item_appendFormattedHovertext;
-HoverRenderer::__renderHoverBox __renderHoverBox;
-
 ShulkerRenderer shulkerRenderer;
 ItemStack shulkerInventory[SHULKER_CACHE_SIZE][27];
 
-static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemStack, Level& level, std::string& text, uint8_t a5) {
-    _Item_appendFormattedHovertext(self, itemStack, level, text, a5);
-    Item* item = itemStack.mItem;
+SafetyHookInline _Item_appendFormattedHoverText;
+SafetyHookInline _Shulker_appendFormattedHoverText;
+SafetyHookInline _HoverRenderer__renderHoverBox;
 
+static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemStack, Level& level, std::string& text, uint8_t a5) {
+    _Item_appendFormattedHoverText.call<void, Item*, const ItemStackBase&, Level&, std::string&, uint8_t>(self, itemStack, level, text, a5);
+
+    Item* item = itemStack.mItem;
     uint64_t max = item->getMaxDamage();
 
     if (max != 0) {
@@ -35,6 +35,7 @@ static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemS
 int index = 0;
 
 static void Shulker_appendFormattedHovertext(ShulkerBoxBlockItem* self, const ItemStackBase& itemStack, Level& level, std::string& text, uint8_t someBool) {
+    Log::Info("Shulker appendFormattedHovertext");
     // Use the appendFormattedHovertext for regular items, we don't want the list of items
     Item_appendFormattedHovertext(self, itemStack, level, text, someBool);
     
@@ -66,7 +67,7 @@ static void Shulker_appendFormattedHovertext(ShulkerBoxBlockItem* self, const It
     }
 }
 
-static void _renderHoverBox(HoverRenderer* self, MinecraftUIRenderContext* ctx, IClientInstance* client, RectangleArea* aabb, float someFloat) {
+static void HoverRenderer__renderHoverBox(HoverRenderer* self, MinecraftUIRenderContext* ctx, IClientInstance* client, RectangleArea* aabb, float someFloat) {
     // This is really bad code, it is relying on the fact that I have also hooked appendFormattedHovertext for items to append the item identifier
     // I have no idea where the currently hovered item is stored in the game! I can't find any references to it, so it might be set in some weird place?
 
@@ -85,42 +86,16 @@ static void _renderHoverBox(HoverRenderer* self, MinecraftUIRenderContext* ctx, 
         return;
     }
 
-    __renderHoverBox(self, ctx, client, aabb, someFloat);
-}
-
-void OnStartJoinGame(ClientInstance* ci) {
-    
-}
-
-void OnRenderUI(ScreenView* screen, UIRenderContext* ctx) {
-    
+    _HoverRenderer__renderHoverBox.thiscall(self, ctx, client, aabb, someFloat);
 }
 
 ModFunction void Initialize(HookManager* hookManager, Amethyst::EventManager* eventManager, InputManager * inputManager) {
-    MH_Initialize();
-
     hookManager->RegisterFunction(&Item::appendFormattedHovertext, "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F1 4C 89 44 24 ? 4C 8B F2 48 8B D9");
+    hookManager->CreateHook(&Item::appendFormattedHovertext, _Item_appendFormattedHoverText, &Item_appendFormattedHovertext);
 
-    hookManager->CreateHook(
-        &Item::appendFormattedHovertext, 
-        &Item_appendFormattedHovertext, reinterpret_cast<void**>(&_Item_appendFormattedHovertext)
-    );
+    hookManager->RegisterFunction(&ShulkerBoxBlockItem::appendFormattedHovertext, "40 53 55 56 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 4D 8B F9 48 8B DA");
+    hookManager->CreateHook(&ShulkerBoxBlockItem::appendFormattedHovertext, _Shulker_appendFormattedHoverText, &Shulker_appendFormattedHovertext);
 
-    /*hookManager.CreateHook(
-        SigScan("40 53 55 56 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 4D 8B F9 48 8B DA"),
-        &Shulker_appendFormattedHovertext, reinterpret_cast<void**>(&_Shulker_appendFormattedHoverText)
-    );
-
-    hookManager.CreateHook(
-        SigScan("40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F1 4C 89 44 24 ? 4C 8B F2 48 8B D9"),
-        &Item_appendFormattedHovertext, reinterpret_cast<void**>(&_Item_appendFormattedHovertext)
-    );
-
-    hookManager.CreateHook(
-        SigScan("48 8B C4 48 89 58 ? 48 89 70 ? 48 89 78 ? 4C 89 70 ? 55 48 8D 68 ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 44 0F 29 40 ? 49 8B D9"),
-        &_renderHoverBox, reinterpret_cast<void**>(&__renderHoverBox)
-    );*/
-
-    eventManager->onStartJoinGame.AddListener(OnStartJoinGame);
-    eventManager->onRenderUI.AddListener(OnRenderUI);
+    hookManager->RegisterFunction(&HoverRenderer::_renderHoverBox, "48 8B C4 48 89 58 ? 48 89 70 ? 48 89 78 ? 4C 89 70 ? 55 48 8D 68 ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 44 0F 29 40 ? 49 8B D9");
+    hookManager->CreateHook(&HoverRenderer::_renderHoverBox, _HoverRenderer__renderHoverBox, &HoverRenderer__renderHoverBox);
 }

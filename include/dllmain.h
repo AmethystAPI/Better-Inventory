@@ -28,6 +28,7 @@
 #include <minecraft/src-client/common/client/renderer/TexturePtr.h>
 #include <minecraft/src-client/common/client/gui/controls/renderers/HoverRenderer.h>
 #include <chrono>
+#include <amethyst-deps/safetyhook.hpp>
 
 #include "ShulkerRenderer.h"
 

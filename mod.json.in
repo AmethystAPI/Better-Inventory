@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "name": "@PROJECT_NAME@",
+    "version": "@MOD_VERSION@",
+    "author": "@MOD_AUTHOR@"
+  }
+}
