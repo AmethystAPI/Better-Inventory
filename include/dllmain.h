@@ -5,11 +5,7 @@
 #include <fstream>
 #include <chrono>
 #include <amethyst/Log.h>
-#include <amethyst/HookManager.h>
-#include <amethyst/InputManager.h>
 #include <amethyst/Memory.h>
-#include <amethyst/events/EventManager.h>
-#include <amethyst/events/Event.h>
 #include <minecraft/src/common/world/item/ItemStack.h>
 #include <minecraft/src/common/world/item/ShulkerBoxBlockItem.h>
 #include <minecraft/src/common/world/item/ItemStackBase.h>
@@ -29,6 +25,7 @@
 #include <minecraft/src-client/common/client/gui/controls/renderers/HoverRenderer.h>
 #include <chrono>
 #include <amethyst-deps/safetyhook.hpp>
+#include <amethyst/runtime/AmethystContext.h>
 
 #include "ShulkerRenderer.h"
 

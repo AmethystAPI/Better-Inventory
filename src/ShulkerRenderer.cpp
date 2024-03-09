@@ -97,7 +97,7 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer,
         for (int y = 0; y < 3; y++) {
             ItemStack* itemStack = &shulkerInventory[index][y * 9 + x];
             if (itemStack->mItem == nullptr) continue;
-            if (itemStack->count == 1) continue;
+            if (itemStack->mCount == 1) continue;
 
             float top = (y * slotSize) + borderSize + textHeight + panelY;
             float bottom = top + 16.f;
@@ -105,7 +105,7 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer,
             float left = (x * slotSize) + borderSize + panelX;
             float right = left + 16.f;
 
-            std::string text = fmt::format("{}", itemStack->count);
+            std::string text = fmt::format("{}", itemStack->mCount);
             RectangleArea rect = { left, right, top + 7.f, bottom};
 
             ctx->drawDebugText(&rect, &text, &mce::Color::WHITE, 1.0f, ui::Left, &textData, &caretData);
