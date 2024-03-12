@@ -20,7 +20,7 @@ static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemS
         text.append(fmt::format("\n{}7Durability: {} / {}{}r", "\xc2\xa7", current, max, "\xc2\xa7"));
     }
     
-    std::string rawNameId = itemStack.getRawNameId();
+    std::string rawNameId = std::string(item->mRawNameId.c_str());
 
     if (rawNameId.find("shulker_box") != std::string::npos) {
         // Don't append the id for shulker boxes (makes it too long)
@@ -55,7 +55,7 @@ static void Shulker_appendFormattedHovertext(ShulkerBoxBlockItem* self, const It
     if (!itemStack.mUserData->contains("Items")) return;
 
     const ListTag* items = itemStack.mUserData->getList("Items");
-    ItemRegistryRef itemRegistryRef = ItemRegistryManager::getItemRegistry();
+    ItemRegistryRef itemRegistryRef = level.mItemRegistry;
     auto registry = itemRegistryRef.mItemRegistry.lock();
 
     for (int i = 0; i < items->size(); i++) {

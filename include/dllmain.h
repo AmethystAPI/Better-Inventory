@@ -26,10 +26,18 @@
 #include <chrono>
 #include <amethyst-deps/safetyhook.hpp>
 #include <amethyst/runtime/AmethystContext.h>
+#include <typeindex>
+#include <minecraft/src/common/world/level/Level.h>
 
 #include "ShulkerRenderer.h"
 
 #define ModFunction extern "C" __declspec(dllexport)
+
+class CollisionTest {
+public:
+    void Func1(const std::string&);
+    void Func2(const std::string&);
+};
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
     return TRUE;
