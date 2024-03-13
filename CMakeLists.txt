@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(BetterInventory)
-set(MOD_VERSION "1.5.0")
+set(MOD_VERSION "1.5.1")
 
 # Define only RelWithDebInfo as the available build configuration
 set(CMAKE_CONFIGURATION_TYPES "RelWithDebInfo" CACHE STRING "Build configurations" FORCE)

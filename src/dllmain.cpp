@@ -55,8 +55,6 @@ static void Shulker_appendFormattedHovertext(ShulkerBoxBlockItem* self, const It
     if (!itemStack.mUserData->contains("Items")) return;
 
     const ListTag* items = itemStack.mUserData->getList("Items");
-    ItemRegistryRef itemRegistryRef = level.mItemRegistry;
-    auto registry = itemRegistryRef.mItemRegistry.lock();
 
     for (int i = 0; i < items->size(); i++) {
         const CompoundTag* itemCompound = items->getCompound(i);
