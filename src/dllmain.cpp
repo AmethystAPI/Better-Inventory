@@ -86,12 +86,12 @@ static void HoverRenderer__renderHoverBox(HoverRenderer* self, MinecraftUIRender
 }
 
 ModFunction void Initialize(AmethystContext* ctx) {
-    ctx->mHookManager.RegisterFunction(&Item::appendFormattedHovertext, "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F1 4C 89 44 24 ? 4C 8B F2 48 8B D9");
-    ctx->mHookManager.CreateHook(&Item::appendFormattedHovertext, _Item_appendFormattedHoverText, &Item_appendFormattedHovertext);
+    ctx->mHookManager.RegisterFunction<&Item::appendFormattedHovertext>("40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F1 4C 89 44 24 ? 4C 8B F2 48 8B D9");
+    ctx->mHookManager.CreateHook<&Item::appendFormattedHovertext>(_Item_appendFormattedHoverText, &Item_appendFormattedHovertext);
 
-    ctx->mHookManager.RegisterFunction(&ShulkerBoxBlockItem::appendFormattedHovertext, "40 53 55 56 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 4D 8B F9 48 8B DA");
-    ctx->mHookManager.CreateHook(&ShulkerBoxBlockItem::appendFormattedHovertext, _Shulker_appendFormattedHoverText, &Shulker_appendFormattedHovertext);
+    ctx->mHookManager.RegisterFunction<&ShulkerBoxBlockItem::appendFormattedHovertext>("40 53 55 56 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 4D 8B F9 48 8B DA");
+    ctx->mHookManager.CreateHook<&ShulkerBoxBlockItem::appendFormattedHovertext>(_Shulker_appendFormattedHoverText, &Shulker_appendFormattedHovertext);
 
-    ctx->mHookManager.RegisterFunction(&HoverRenderer::_renderHoverBox, "48 8B C4 48 89 58 ? 48 89 70 ? 48 89 78 ? 4C 89 70 ? 55 48 8D 68 ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 44 0F 29 40 ? 49 8B D9");
-    ctx->mHookManager.CreateHook(&HoverRenderer::_renderHoverBox, _HoverRenderer__renderHoverBox, &HoverRenderer__renderHoverBox);
+    ctx->mHookManager.RegisterFunction<&HoverRenderer::_renderHoverBox>("48 8B C4 48 89 58 ? 48 89 70 ? 48 89 78 ? 4C 89 70 ? 55 48 8D 68 ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 44 0F 29 40 ? 49 8B D9");
+    ctx->mHookManager.CreateHook<&HoverRenderer::_renderHoverBox>(_HoverRenderer__renderHoverBox, &HoverRenderer__renderHoverBox);
 }

@@ -5,12 +5,6 @@ extern ItemStack shulkerInventory[SHULKER_CACHE_SIZE][27];
 // Texture loading
 static HashedString flushString(0xA99285D21E94FC80, "ui_flush");
 
-static const auto itemSlotTexture = std::make_unique<mce::TexturePtr>();
-static const auto backgroundTexture = std::make_unique<mce::TexturePtr>();
-
-static ResourceLocation itemSlotLocation("textures/gui/gui");
-static ResourceLocation backgroundLocation("textures/ui/purpleBorder");
-
 bool hasLoadedTexture = false;
 
 // Slot sizing
@@ -37,9 +31,13 @@ int countNewlines(const std::string& str) {
 void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer, int index) {
 	// Only load inventory resources once
 	if (!hasLoadedTexture) {
-		ctx->getTexture(itemSlotTexture.get(), &itemSlotLocation, true);
-        ctx->getTexture(backgroundTexture.get(), &backgroundLocation, true);
-		hasLoadedTexture = true;
+        ResourceLocation backgroundResource("textures/ui/purpleBorder");
+        mBackgroundTexture = ctx->getTexture(&backgroundResource, true);
+
+        ResourceLocation itemSlotResource("textures/gui/gui");
+        mItemSlotTexture = ctx->getTexture(&itemSlotResource, true);
+
+        hasLoadedTexture = true;
 	}
 
     float textHeight = (countNewlines(hoverRenderer->mFilteredContent) + 1) * 10.0f;
@@ -51,7 +49,7 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer,
 
     // Draw the background panel
     RectangleArea background = {panelX - 4, panelX + panelWidth + 4, panelY - 4, panelY + panelHeight + 4};
-    backgroundNineslice.Draw(background, backgroundTexture.get(), ctx);
+    backgroundNineslice.Draw(background, &mBackgroundTexture, ctx);
     ctx->flushImages(mce::Color::WHITE, 1.0f, flushString);
 
     // Draw the item slots
@@ -60,7 +58,7 @@ void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer,
             glm::tvec2<float> size(slotSize, slotSize);
             glm::tvec2<float> position(panelX + slotSize * x, panelY + textHeight + slotSize * y);
 
-            ctx->drawImage(*itemSlotTexture, &position, &size, &itemSlotUvPos, &itemSlotUvSize, 0);
+            ctx->drawImage(mItemSlotTexture, &position, &size, &itemSlotUvPos, &itemSlotUvSize, 0);
         }
     }
 

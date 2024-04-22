@@ -4,40 +4,34 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <amethyst/Log.h>
-#include <amethyst/Memory.h>
-#include <minecraft/src/common/world/item/ItemStack.h>
-#include <minecraft/src/common/world/item/ShulkerBoxBlockItem.h>
-#include <minecraft/src/common/world/item/ItemStackBase.h>
-#include <minecraft/src/common/nbt/CompoundTag.h>
-#include <minecraft/src/common/nbt/ListTag.h>
-#include <minecraft/src/common/nbt/CompoundTagVariant.h>
-#include <minecraft/src/common/nbt/ByteTag.h>
-#include <minecraft/src-client/common/client/renderer/actor/ItemRenderer.h>
-#include <minecraft/src-client/common/client/renderer/BaseActorRenderContext.h>
-#include <minecraft/src-client/common/client/gui/ScreenView.h>
-#include <minecraft/src/common/world/item/registry/ItemRegistryManager.h>
-#include <minecraft/src/common/world/item/registry/ItemRegistry.h>
-#include <minecraft/src/common/world/actor/player/PlayerInventory.h>
-#include <minecraft/src/common/world/Container.h>
-#include <minecraft/src-deps/core/resource/ResourceHelper.h>
-#include <minecraft/src-client/common/client/renderer/TexturePtr.h>
-#include <minecraft/src-client/common/client/gui/controls/renderers/HoverRenderer.h>
+#include <amethyst/Log.hpp>
+#include <amethyst/Memory.hpp>
+#include <minecraft/src/common/world/item/ItemStack.hpp>
+#include <minecraft/src/common/world/item/ShulkerBoxBlockItem.hpp>
+#include <minecraft/src/common/world/item/ItemStackBase.hpp>
+#include <minecraft/src/common/nbt/CompoundTag.hpp>
+#include <minecraft/src/common/nbt/ListTag.hpp>
+#include <minecraft/src/common/nbt/CompoundTagVariant.hpp>
+#include <minecraft/src/common/nbt/ByteTag.hpp>
+#include <minecraft/src-client/common/client/renderer/actor/ItemRenderer.hpp>
+#include <minecraft/src-client/common/client/renderer/BaseActorRenderContext.hpp>
+#include <minecraft/src-client/common/client/gui/ScreenView.hpp>
+#include <minecraft/src/common/world/item/registry/ItemRegistryManager.hpp>
+#include <minecraft/src/common/world/item/registry/ItemRegistry.hpp>
+#include <minecraft/src/common/world/actor/player/PlayerInventory.hpp>
+#include <minecraft/src/common/world/Container.hpp>
+#include <minecraft/src-deps/core/resource/ResourceHelper.hpp>
+#include <minecraft/src-client/common/client/renderer/TexturePtr.hpp>
+#include <minecraft/src-client/common/client/gui/controls/renderers/HoverRenderer.hpp>
 #include <chrono>
 #include <amethyst-deps/safetyhook.hpp>
-#include <amethyst/runtime/AmethystContext.h>
+#include <amethyst/runtime/AmethystContext.hpp>
 #include <typeindex>
-#include <minecraft/src/common/world/level/Level.h>
+#include <minecraft/src/common/world/level/Level.hpp>
 
 #include "ShulkerRenderer.h"
 
 #define ModFunction extern "C" __declspec(dllexport)
-
-class CollisionTest {
-public:
-    void Func1(const std::string&);
-    void Func2(const std::string&);
-};
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
     return TRUE;

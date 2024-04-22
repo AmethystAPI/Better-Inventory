@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(BetterInventory)
-set(MOD_VERSION "1.5.1")
+set(MOD_VERSION "1.5.2")
 
 # Define only RelWithDebInfo as the available build configuration
 set(CMAKE_CONFIGURATION_TYPES "RelWithDebInfo" CACHE STRING "Build configurations" FORCE)
@@ -46,14 +46,6 @@ add_custom_target(ClangFormat
     -i
     ${CPP_SOURCES} ${H_FILES}
 )
-
-# Copy resource packs to com.mojang/development_resource_packs
-# add_custom_target(CopyResources
-#     COMMENT "Copying resources to ${DevResourcesFolder}/${PROJECT_NAME}"
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/resources" "${DevResourcesFolder}/${PROJECT_NAME}"
-# )
-
-# add_dependencies(${PROJECT_NAME} CopyResources)
 
 # Write a mod.json file to provide meta data about the mod
 configure_file(mod.json.in "${AmethystFolder}/mods/${PROJECT_NAME}@${MOD_VERSION}/mod.json" @ONLY)
