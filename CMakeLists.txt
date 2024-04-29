@@ -1,51 +1,43 @@
 cmake_minimum_required(VERSION 3.12)
-project(BetterInventory)
+project(BetterInventory CXX ASM_NASM)
+include(FetchContent)
+
+# Mod Options
 set(MOD_VERSION "1.5.2")
 
-# Define only RelWithDebInfo as the available build configuration
-set(CMAKE_CONFIGURATION_TYPES "RelWithDebInfo" CACHE STRING "Build configurations" FORCE)
-set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo" FORCE)
+# Compiler Options
 set(CMAKE_CXX_STANDARD 23)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set(CMAKE_CONFIGURATION_TYPES "RelWithDebInfo" CACHE STRING "Build configurations" FORCE)
+set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: RelWithDebInfo" FORCE)
 
-# Build into %appdata%/Amethyst
-set(AmethystInstallDirectory "$ENV{AppData}/Amethyst/")
-set(AmethystFolder "$ENV{localappdata}/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/AC/Amethyst/")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${AmethystFolder}/mods/${PROJECT_NAME}@${MOD_VERSION}")
+# Make the Mod
+file(GLOB_RECURSE ${PROJECT_NAME}_All
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.asm
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
+) 
 
-# Include Amethyst
-find_library(AMETHYST_API AmethystAPI PATHS "${AmethystInstallDirectory}/lib")
-include_directories(${AmethystInstallDirectory}/include "include/")
+add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_All})
 
-# Project Files
-file(GLOB_RECURSE CPP_SOURCES "src/*.cpp")
-file(GLOB_RECURSE H_FILES "include/*.h" )
-add_library(${PROJECT_NAME} SHARED ${CPP_SOURCES} ${H_FILES})
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    AmethystAPI 
+    libhat
+    $ENV{amethyst_src}/AmethystAPI/lib/fmt.lib
+)
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+    $<$<COMPILE_LANGUAGE:CXX>:/MP>
+)
 
 # EnTT Config Options
 target_compile_definitions(${PROJECT_NAME} PUBLIC ENTT_PACKED_PAGE=128)
 
-# Organize source files into virtual folders in Visual Studio
-foreach(source IN LISTS CPP_SOURCES H_FILES)
-    get_filename_component(source_path "${source}" DIRECTORY)
-    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}" "" source_path_relative "${source_path}")
-    string(REPLACE "/" "\\" source_path_relative "${source_path_relative}")
-    source_group("${source_path_relative}" FILES "${source}")
-endforeach()
-
-# Pass MOD_VERSION to the source code
-target_compile_definitions(${PROJECT_NAME} PRIVATE MOD_VERSION="${MOD_VERSION}")
-
-# Link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE ${AMETHYST_API})
-target_link_libraries(${PROJECT_NAME} PRIVATE "${AmethystInstallDirectory}/lib/fmt.lib")
-target_link_libraries(${PROJECT_NAME} PRIVATE "${AmethystInstallDirectory}/lib/libhat.lib")
-
-# Code Style
-add_custom_target(ClangFormat
-    COMMAND clang-format
-    -i
-    ${CPP_SOURCES} ${H_FILES}
-)
-
-# Write a mod.json file to provide meta data about the mod
-configure_file(mod.json.in "${AmethystFolder}/mods/${PROJECT_NAME}@${MOD_VERSION}/mod.json" @ONLY)
+# Get the AmethystAPI Lib.
+add_subdirectory("$ENV{amethyst_src}/AmethystAPI" "build")
