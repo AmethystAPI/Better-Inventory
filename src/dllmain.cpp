@@ -3,7 +3,7 @@
 ClientInstance* client;
 
 ShulkerRenderer shulkerRenderer;
-ItemStack shulkerInventory[SHULKER_CACHE_SIZE][27];
+ItemStack shulkerInventory[SHULKER_CACHE_SIZE][27]; 
 
 SafetyHookInline _Item_appendFormattedHoverText;
 SafetyHookInline _Shulker_appendFormattedHoverText;
@@ -86,14 +86,6 @@ static void HoverRenderer__renderHoverBox(HoverRenderer* self, MinecraftUIRender
 }
 
 ModFunction void Initialize(AmethystContext* ctx) {
-    SemVersion semVersion = ctx->mMinecraftPackageInfo.mVersion;
-    
-    // This happens after global initialization, which is where the crash is happening lol. 
-    // this only seems to show up with dev mode, eh it cant hurt i guess to keep.
-    if (semVersion.mPatch >= 7301) {
-        Assert("It is known that BetterInventory@1.5.2 does not work for .73 and above. While the mod has been made specifically for the .71 version, it **does** work on .72 which is still avaliable to play!");
-    }
-
     ctx->mHookManager.RegisterFunction<&Item::appendFormattedHovertext>("40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F1 4C 89 44 24 ? 4C 8B F2 48 8B D9");
     ctx->mHookManager.CreateHook<&Item::appendFormattedHovertext>(_Item_appendFormattedHoverText, &Item_appendFormattedHovertext);
 
