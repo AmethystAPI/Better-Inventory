@@ -22,6 +22,10 @@ static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemS
     
     std::string rawNameId = std::string(item->mRawNameId.c_str());
 
+    if (rawNameId == "bee_nest" || rawNameId == "beehive") {
+        AppendBeeNestInformation(text, itemStack);
+    }
+
     if (rawNameId.find("shulker_box") != std::string::npos) {
         // Don't append the id for shulker boxes (makes it too long)
         text.append(fmt::format("\n{}8{}:{}{}r", "\xc2\xa7", item->mNamespace, rawNameId, "\xc2\xa7"));
@@ -29,6 +33,19 @@ static void Item_appendFormattedHovertext(Item* self, const ItemStackBase& itemS
     }
 
     text.append(fmt::format("\n{}8{}:{} ({}){}r", "\xc2\xa7", item->mNamespace, rawNameId, item->mId, "\xc2\xa7"));
+}
+
+static void AppendBeeNestInformation(std::string& text, const ItemStackBase& itemStack) {
+    CompoundTag* userData = itemStack.mUserData;
+    
+    // There are no bees in the bee nest
+    if (userData == nullptr || !userData->contains("Occupants")) {
+        text.append(fmt::format("\n{}5Contains 0 bees", "\xc2\xa7"));
+        return;
+    };
+
+    ListTag* occupants = userData->getList("Occupants");
+    text.append(fmt::format("\n{}5Contains {:d} bee{}", "\xc2\xa7", occupants->size(), occupants->size() > 1 ? "s" : ""));
 }
 
 int index = 0;
