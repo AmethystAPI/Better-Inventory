@@ -1,9 +1,11 @@
-# Better Inventory
+# Usage Guide
 
-Better Inventory is an inventory improvement mod for Minecraft Bedrock edition, version `1.20.51.1`. The mod is built with [Amethyst](https://github.com/FrederoxDev/Amethyst) and it adds in a shulker box preview, as well as the ability to see extra information about other items, like its identifier, namespace, durability and aux id.
+Start by selecting `Use this template` > `Create a new Repository` and setup a repository. Next clone the repository, and replace the information at the start of the `CMakeLists.txt` file.
 
-### Shulker box previewer
-![image](https://github.com/FrederoxDev/Better-Inventory/assets/69014593/a6f26fd7-f934-4a9a-95ba-5f03eb950509)
+```cmake
+project(Amethyst-Template CXX ASM_NASM) # Replace `Amethyst-Template` with the name of your mod
+set(MOD_VERSION "0.1.0") # Replace this with the version number of your mod
+set(MOD_AUTHOR "FrederoxDev") # Replace this with your name
+```
 
-### Item Information
-![image](https://github.com/FrederoxDev/Better-Inventory/assets/69014593/97290890-1a12-4c61-a9ac-407bf78289d6)
+To build this, you need to have also build AmethystAPI seperately
