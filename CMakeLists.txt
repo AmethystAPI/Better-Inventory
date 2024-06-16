@@ -3,7 +3,7 @@ project(BetterInventory CXX ASM_NASM)
 include(FetchContent)
 
 # Mod Options
-set(MOD_VERSION "1.5.2")
+set(MOD_VERSION "1.6.0")
 
 # Amethyst Minecraft Folder
 set(AmethystFolder "$ENV{localappdata}/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/AC/Amethyst/")
@@ -47,4 +47,4 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 target_compile_definitions(${PROJECT_NAME} PUBLIC ENTT_PACKED_PAGE=128)
 
 # Get the AmethystAPI Lib.
-add_subdirectory("$ENV{amethyst_src}/AmethystAPI" "build")
+add_subdirectory("$ENV{amethyst_src}/AmethystAPI" "build") 
