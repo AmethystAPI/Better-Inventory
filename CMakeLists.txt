@@ -3,7 +3,7 @@ project(BetterInventory CXX ASM_NASM)
 include(FetchContent)
 
 # Mod Options
-set(MOD_VERSION "1.6.0")
+set(MOD_VERSION "1.6.1")
 
 # Amethyst Minecraft Folder
 set(AmethystFolder "$ENV{localappdata}/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/amethyst/")
