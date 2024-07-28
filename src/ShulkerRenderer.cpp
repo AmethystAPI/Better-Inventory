@@ -1,4 +1,7 @@
 #include "ShulkerRenderer.h"
+#include <minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
+#include <minecraft/src-deps/core/math/Color.hpp>
+#include <minecraft/src-client/common/client/game/ClientInstance.hpp>
 
 extern ItemStack shulkerInventory[SHULKER_CACHE_SIZE][27];
 
@@ -31,11 +34,8 @@ int countNewlines(const std::string& str) {
 void ShulkerRenderer::Render(UIRenderContext* ctx, HoverRenderer* hoverRenderer, int index) {
 	// Only load inventory resources once
 	if (!hasLoadedTexture) {
-        ResourceLocation backgroundResource("textures/ui/purpleBorder");
-        mBackgroundTexture = ctx->getTexture(&backgroundResource, true);
-
-        ResourceLocation itemSlotResource("textures/gui/gui");
-        mItemSlotTexture = ctx->getTexture(&itemSlotResource, true);
+        mBackgroundTexture = ctx->getTexture("textures/ui/purpleBorder", true);
+        mItemSlotTexture = ctx->getTexture("textures/gui/gui", true);
 
         hasLoadedTexture = true;
 	}

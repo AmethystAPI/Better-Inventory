@@ -28,6 +28,7 @@
 #include <amethyst/runtime/AmethystContext.hpp>
 #include <typeindex>
 #include <minecraft/src/common/world/level/Level.hpp>
+#include <amethyst/runtime/ModContext.hpp>
 
 #include "ShulkerRenderer.h"
 

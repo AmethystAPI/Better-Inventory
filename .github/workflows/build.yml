@@ -1,0 +1,111 @@
+name: Publish Version
+
+on:
+  workflow_dispatch:
+
+env:
+    MOD_NAME: BetterInventory
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+        # Clone the current repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+        # Clone AmethystAPI into /amethyst
+      - name: Checkout Amethyst
+        uses: actions/checkout@v2
+        with:
+            repository: 'FrederoxDev/Amethyst'
+            path: 'amethyst'
+
+        # Install required tools
+      - name: Install NASM and GH
+        run: |
+          choco install nasm -y
+          choco install gh -y
+        shell: cmd
+
+      - name: Setup Visual studio
+        uses: microsoft/setup-msbuild@v2
+
+        # Bump up the version number
+      - name: Extract and increment version number
+        id: increment_version
+        run: |
+          $filePath = "CMakeLists.txt"
+          $version_line = Select-String -Path $filePath -Pattern 'set\(MOD_VERSION "(.*)"\)'
+          if ($version_line -match 'set\(MOD_VERSION "(\d+)\.(\d+)\.(\d+)"\)') {
+            $major = [int]$matches[1]
+            $minor = [int]$matches[2]
+            $patch = [int]$matches[3]
+
+            # Increment the minor version
+            $new_patch = $patch + 1
+            $new_version = "$major.$minor.$new_patch"
+
+            # Update the CMakeLists.txt file
+            (Get-Content $filePath) -replace 'set\(MOD_VERSION ".*"\)', "set(MOD_VERSION `"$new_version`")" | Set-Content $filePath
+
+            echo "NEW_VERSION=$new_version" >> $env:GITHUB_ENV
+            echo "FILE_PATH=$filePath" >> $env:GITHUB_ENV
+          } else {
+            Write-Error "Version line not found or does not match the expected format."
+            exit 1
+          }
+        shell: pwsh      
+
+      - name: Push bumped version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add $env:FILE_PATH
+          git commit -m "Bump version to $env:NEW_VERSION"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+
+      - name: Build Mod
+        run: |
+          mkdir build
+          cd build
+          cmake -DCI_CD_BUILD=ON ..
+          msbuild ${{ env.MOD_NAME }}.sln
+
+      - name: Package Build
+        run: |
+          $version = $env:NEW_VERSION
+          $sourcePath = "dist/${{ env.MOD_NAME }}@$version"
+          $zipPath = "dist/${{ env.MOD_NAME }}@$version.zip"
+
+          if (-Not (Test-Path -Path $sourcePath)) {
+            Write-Error "Source path does not exist: $sourcePath"
+            exit 1
+          }
+
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          [System.IO.Compression.ZipFile]::CreateFromDirectory($sourcePath, $zipPath)
+        shell: pwsh
+
+      - name: Create GitHub Release
+        id: create_release
+        run: |
+          $tag_name = "v$env:NEW_VERSION"
+          $release_name = "Release $env:NEW_VERSION"
+          gh release create $tag_name --title "$release_name" --notes "Automated release" --target main --repo ${{ github.repository }} --draft=false --prerelease=false
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Asset
+        run: |
+          $asset_path = "dist/${{ env.MOD_NAME }}@$env:NEW_VERSION.zip"
+          $asset_label = "${{ env.MOD_NAME }}@$env:NEW_VERSION.zip"
+          gh release upload "v$env:NEW_VERSION" "$asset_path#$asset_label" --repo ${{ github.repository }}
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
