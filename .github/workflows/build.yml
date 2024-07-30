@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-    MOD_NAME: BetterInventory
+    MOD_NAME: Better-Inventory
 
 jobs:
   build:
