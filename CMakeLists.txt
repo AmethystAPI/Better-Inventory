@@ -1,5 +1,5 @@
 project(Atlas CXX ASM_NASM)
-set(MOD_VERSION "1.6.0")
+set(MOD_VERSION "1.6.1")
 set(MOD_AUTHOR "FrederoxDev")
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
