@@ -23,6 +23,7 @@
 #include <mc/src-deps/core/resource/ResourceHelper.hpp>
 #include <mc/src-client/common/client/renderer/TexturePtr.hpp>
 #include <mc/src-client/common/client/gui/controls/renderers/HoverRenderer.hpp>
+#include <mc/src-client/common/client/player/LocalPlayer.hpp>
 #include <chrono>
 #include <amethyst-deps/safetyhook.hpp>
 #include <amethyst/runtime/AmethystContext.hpp>
